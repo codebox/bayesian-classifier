@@ -12,8 +12,7 @@ class Status(Mode):
 	def execute(self):
 		db = Db()
 		bar = '=' * 40
-		print '''%s
-Status:
-    Scam Ads:     %s
-    Non-Scam Ads: %s
-%s''' % (bar, db.get_ad_count(True), db.get_ad_count(False), bar)
+		print 'Status:\n'
+		for doctype, count in db.get_doctype_counts().items():
+			print doctype, ': ', count
+

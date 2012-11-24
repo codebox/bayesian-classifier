@@ -11,22 +11,7 @@ from status import Status
 from db import Db
 
 '''
-create table ok_words(word, count);
-create table scam_words(word, count);
-create table ad_counts(is_scam, count);
-insert into ad_counts (is_scam, count) values (1, 0);
-insert into ad_counts (is_scam, count) values (0, 0);
-
-create index i1 on ok_words(word);
-create index i2 on scam_words(word);
-
 P(W|L) = P(L|W) . P(W) / P(L)
-
-
-delete from ok_words;
-delete from scam_words;
-update ad_counts set count = 0;
-
 '''
 commonWords = ('the','be','to','of','and','a','in','that','have','it','is','im','are','was','for','on','with','he','as','you','do','at','this','but','his','by','from','they','we','say','her','she','or','an','will','my','one','all','would','there','their','what','so','up','out','if','about','who','get','which','go','me','when','make','can','like','time','just','him','know','take','person','into','year','your','some','could','them','see','other','than','then','now','look','only','come','its','over','think','also','back','after','use','two','how','our','way','even','because','any','these','us')
 '''
@@ -129,17 +114,14 @@ if __name__ == '__main__':
 	args = sys.argv
 	usage = 'Usage: %s %s <mode specific args>' % (args[0], '|'.join(modes.keys()))
 
-	try:
-		if (len(args) < 2):
-			raise ValueError(usage)
+	if (len(args) < 2):
+		raise ValueError(usage)
 
-		mode_name = args[1]
-		if mode_name not in modes:
-			raise ValueError(usage + '\nUnrecognised mode: ' + mode_name)
+	mode_name = args[1]
+	if mode_name not in modes:
+		raise ValueError(usage + '\nUnrecognised mode: ' + mode_name)
 
-		mode = modes[mode_name]()
-		mode.validate(args)
-		mode.execute()
+	mode = modes[mode_name]()
+	mode.validate(args)
+	mode.execute()
 
-	except Exception as e:
-		print e

@@ -1,19 +1,15 @@
+from db import Db
 from mode import Mode
+from words import list_to_dict
+from words import text_to_list
 
 class Learn(Mode):
-	def name(self):
-		return 'learn'
-
 	def validate(self, args):
-		scam_type = 'scam'
-		non_scam_type = 'nonscam'
 		valid_args = False
-		usage = 'Usage: %s learn %s|%s <file> <count>' % (args[0], scam_type, non_scam_type)
+		usage = 'Usage: %s learn <doc type> <file> <count>' % args[0]
 
 		if len(args) == 5:
-			learn_type = args[2]
-			if learn_type not in [scam_type, non_scam_type]:
-				raise ValueError(usage + '\nInvalid document type argument, expected "%s" or "%s"' % (scam_type, non_scam_type))
+			doc_type = args[2]
 			
 			file_contents = None
 			try:
@@ -29,10 +25,15 @@ class Learn(Mode):
 
 			self.file_contents = file_contents
 			self.count = count
-			self.is_scam = learn_type == scam_type
+			self.doc_type = doc_type
 
 		else:
 			raise ValueError(usage)				
 
 	def execute(self):
-		print 'learn'
+		db = Db()
+		l = text_to_list(self.file_contents)
+		d = list_to_dict(l)
+		db.update_word_counts(d, self.doc_type)
+		db.update_doctype_count(self.count, self.doc_type)
+
