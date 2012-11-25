@@ -59,7 +59,7 @@ class Classify(Mode):
 	def p_from_list(self, l):
 		p_product         = reduce(lambda x,y: x*y, l)
 		p_inverse_product = reduce(lambda x,y: x*y, map(lambda x: 1-x, l))
-		print p_product, p_inverse_product, p_product / (p_product + p_inverse_product)
+
 		return p_product / (p_product + p_inverse_product)
 
 	
@@ -76,7 +76,6 @@ class Classify(Mode):
 
 		for word in self.words:
 			p = self.p_for_word(db, word)
-			print word, p
 			pl.append(p)
 
 		result = self.p_from_list(pl)
