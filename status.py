@@ -2,8 +2,6 @@ from db import Db
 from mode import Mode
 
 class Status(Mode):
-	def name(self):
-		return 'status'
 
 	def validate(self, args):
 		if len(args) != 2:
@@ -11,8 +9,16 @@ class Status(Mode):
 
 	def execute(self):
 		db = Db()
-		bar = '=' * 40
-		print 'Status:\n'
-		for doctype, count in db.get_doctype_counts().items():
-			print doctype, ': ', count
+		return db.get_doctype_counts().items()
 
+	def output(self, results):
+		bar = '=' * 40
+		print '%s\nStatus:\n%s\n' % (bar, bar)
+
+		if results:
+			for doctype, count in results:
+				print '%s: %s' % (doctype, count)
+		else:
+			print 'No data'
+
+		print '\n%s' % bar

@@ -36,4 +36,7 @@ class Learn(Mode):
 		d = list_to_dict(l)
 		db.update_word_counts(d, self.doc_type)
 		db.update_doctype_count(self.count, self.doc_type)
+		return self.count
 
+	def output(self, _):
+		print "Processed %s documents of type '%s'" % (self.count, self.doc_type)

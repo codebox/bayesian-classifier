@@ -10,23 +10,31 @@ def is_doctype_valid(doctype):
 	return Db().get_words_count(doctype) > 0
 
 def check_file(f):
-	classifier.validate_file_name(f)
-	result = classifier.calculate()
-	print result
-	return [result]
+	results = []
+	for line in open(f, 'r').readlines():
+		try:
+			classifier.set_text(line)
+			results += [classifier.execute()]
+		except ValueError:
+			pass
+	
+	return results
 
 def check_dir(d):
 	results = []
 	for f in os.listdir(d):
-		if f.endswith(".txt"):
+		if f.endswith(".js"):
 			results += check_file(os.path.join(d,f))
 
 	return results
 
 def show_results(results):
 	result_count = len(results)
-	print 'Tested with %s document%s' % (result_count, '' if result_count == 1 else 's')
-	print 'Result was %1.2f (1 is good, 0 is bad)' % (sum(results) / result_count,)
+	if result_count:
+		print 'Tested with %s document%s' % (result_count, '' if result_count == 1 else 's')
+		print 'Result was %1.2f (0 = %s, 1 = %s)' % (sum(results) / result_count, doctype_other, doctype_expected)
+	else :
+		print 'No documents found'
 
 if __name__ == '__main__':
 	usage = 'Usage: %s <file> <expected doctype> <other doctype>' % sys.argv[0]
@@ -38,7 +46,7 @@ if __name__ == '__main__':
 	doctype_expected = sys.argv[2]
 	doctype_other = sys.argv[3]
 
-	classifier.validate_doctypes(doctype_expected, doctype_other)
+	classifier.set_doctypes(doctype_expected, doctype_other)
 
 	results = None
 	if os.path.isfile(input_file):

@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
 		mode = modes[mode_name]()
 		mode.validate(args)
-		mode.execute()
+		mode.output(mode.execute())
 		
 	except Exception as ex:
 		print ex

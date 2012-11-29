@@ -5,5 +5,5 @@ class Mode:
 	def execute(self):
 		raise NotImplementedError()
 
-	def name(self):
+	def output(self):
 		raise NotImplementedError()
