@@ -8,19 +8,15 @@ class Classify(Mode):
 	RARE_WORD_PROB = 0.5
 	EXCLUSIVE_WORD_PROB = 0.99
 
-	def validate(self, args):
-		if len(args) != 5:
-			raise ValueError('Usage: %s classify <file> <doctype> <doctype>' % args[0])
-
-		file_contents = None
+	def validate_file_name(self, file_name):
 		try:
-			file_contents = open(args[2], 'r').read()
-		except Exception as e:
-			raise ValueError('Unable to read specified file "%s", the error message was: %s' % (args[2], e))
-		
-		doctype1 = args[3]
-		doctype2 = args[4]
+			file_contents = open(file_name, 'r').read()
+			self.words = text_to_list(file_contents)
 
+		except Exception as e:
+			raise ValueError('Unable to read specified file "%s", the error message was: %s' % (file_name, e))
+
+	def validate_doctypes(self, doctype1, doctype2):
 		if doctype1 == doctype2:
 			raise ValueError('Please enter two different doctypes')
 
@@ -33,7 +29,13 @@ class Classify(Mode):
 
 		self.doctype1 = doctype1
 		self.doctype2 = doctype2
-		self.words = text_to_list(file_contents)
+
+	def validate(self, args):
+		if len(args) != 5:
+			raise ValueError('Usage: %s classify <file> <doctype> <doctype>' % args[0])
+
+		self.validate_file_name(args[2])
+		self.validate_doctypes(args[3], args[4])
 
 	def p_for_word(self, db, word):
 		total_word_count = self.doctype1_word_count + self.doctype2_word_count
@@ -62,8 +64,7 @@ class Classify(Mode):
 
 		return p_product / (p_product + p_inverse_product)
 
-	
-	def execute(self):
+	def calculate(self):
 		pl = []
 		db = Db()
 
@@ -80,5 +81,11 @@ class Classify(Mode):
 
 		result = self.p_from_list(pl)
 
+		return result
+
+	def execute(self):
+		result = self.calculate()
+
 		print 'Probability that document is %s rather than %s is %1.2f' % (self.doctype1, self.doctype2, result)
+
 		return result
