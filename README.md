@@ -25,7 +25,7 @@ Classification
 
 Once training is complete, classification is performed using this command:
 
-    bayes.py classify <file> <doctype> <doctype>
+    python bayes.py classify <file> <doctype> <doctype>
 
 + The *file* argument indicates the location of the file containing the document to be classified
 + The two *doctype* arguments are the names of the document types against which the input file will be compared
